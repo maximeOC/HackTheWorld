@@ -1,0 +1,19 @@
+stages:
+  - build
+  - test
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  image: maven:3.8.4-openjdk-17
+  script:
+    - mvn clean package
+  tags:
+    - build
+
+unit-test-job:   # This job runs in the test stage.
+  stage: test
+  image: maven:3.8.4-openjdk-17
+  script:
+    - mvn test
+  tags:
+    - test

@@ -1,0 +1,41 @@
+version: '3.8'
+
+volumes:
+    db:
+
+services:
+  springboot:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - phpmyadmin
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+    ports:
+      - "8080:8080"
+
+  db:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=hwh
+      - MYSQL_ROOT_PASSWORD=root
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+      - UPLOAD_LIMIT=512M
